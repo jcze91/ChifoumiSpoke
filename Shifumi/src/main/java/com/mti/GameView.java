@@ -21,6 +21,7 @@ public class GameView extends VerticalLayout implements View {
     private final Label result = new Label();
     User IA = new User();
     User currentUser;
+    private Match m = null;
 
     public GameView() {
         setSizeFull();
@@ -45,6 +46,7 @@ public class GameView extends VerticalLayout implements View {
                     }
                 });
         Label iaLabel = new Label("IA");
+        IA.setName("IA");
         IA.setShot(new Shot(IAShot()));
 
         youContent.addComponent(youLabel);
@@ -64,10 +66,11 @@ public class GameView extends VerticalLayout implements View {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         currentUser.setShot(new Shot(ShotKind.PAPER));
-                        Match m = new Match(currentUser, IA);
+                        m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
+                        Notification.show(m.getWinner().getName());
                     }
                 });
         Button paper = new Button("PAPER",
@@ -75,7 +78,7 @@ public class GameView extends VerticalLayout implements View {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         currentUser.setShot(new Shot(ShotKind.ROCK));
-                        Match m = new Match(currentUser, IA);
+                        m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
@@ -86,7 +89,7 @@ public class GameView extends VerticalLayout implements View {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         currentUser.setShot(new Shot(ShotKind.SCISSORS));
-                        Match m = new Match(currentUser, IA);
+                        m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
@@ -97,7 +100,7 @@ public class GameView extends VerticalLayout implements View {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         currentUser.setShot(new Shot(ShotKind.SPOKE));
-                        Match m = new Match(currentUser, IA);
+                        m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
@@ -108,7 +111,7 @@ public class GameView extends VerticalLayout implements View {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         currentUser.setShot(new Shot(ShotKind.LIZARD));
-                        Match m = new Match(currentUser, IA);
+                        m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
