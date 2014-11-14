@@ -62,7 +62,7 @@ public class LobbyView extends VerticalLayout implements View {
         UI ui = getUI();
         String username = (String)ui.getSession().getAttribute(Globals.SESSION_USERNAME);
         Notification notif = new Notification(String.format("Hey %s ! Welcome in the ChifumiSpoke !", username));
-        notif.setDelayMsec(3000);
+        notif.setDelayMsec(1000);
         notif.show(Page.getCurrent());
         searchOpponent();
     }
@@ -73,33 +73,24 @@ public class LobbyView extends VerticalLayout implements View {
         accept.setVisible(false);
         refuse.setVisible(false);
 
-        int timeout =  randInt(0, 15) * 1000;
-        System.out.println(timeout);
+        int timeout = randInt(0, 15) * 1000;
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-
-        final Future<String> handler = executor.submit(new Callable() {
-            @Override
-            public Void call() throws Exception {
-                findOpponent();
-                return null;
-            }
-        });
-
-        executor.schedule(new Runnable(){
+        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.schedule(new Runnable(){
             @Override
             public void run(){
-                handler.cancel(true);
+                findOpponent();
             }
         }, timeout, TimeUnit.MILLISECONDS);
     }
 
     private void findOpponent()
     {
-        System.out.println("opponentfound");
-        accept.setVisible(true);
-        refuse.setVisible(true);
-        label.setValue("Opponent found !");
+        getUI().access(() -> {
+            accept.setVisible(true);
+            refuse.setVisible(true);
+            label.setValue("Opponent found !");
+        });
     }
 
     private int randInt(int min, int max) {
