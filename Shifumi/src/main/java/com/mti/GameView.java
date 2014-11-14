@@ -19,6 +19,12 @@ public class GameView extends VerticalLayout implements View {
     private final Label youShot = new Label();
     private final Label iaShot = new Label();
     private final Label result = new Label();
+    private final Button rock;
+    private final Button scissors;
+    private final Button paper;
+    private final Button lizard;
+    private final Button spoke;
+    private final Button nextPlay;
     User IA = new User();
     User currentUser;
     private Match m = null;
@@ -61,7 +67,7 @@ public class GameView extends VerticalLayout implements View {
 
         bodyContent.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 
-        Button rock = new Button("ROCK",
+        rock = new Button("ROCK",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -70,10 +76,10 @@ public class GameView extends VerticalLayout implements View {
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
-                        Notification.show(m.getWinner().getName());
+                        displayWinner();
                     }
                 });
-        Button paper = new Button("PAPER",
+        paper = new Button("PAPER",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -82,9 +88,11 @@ public class GameView extends VerticalLayout implements View {
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
+                        displayWinner();
+
                     }
                 });
-        Button scissors = new Button("SCISSORS",
+        scissors = new Button("SCISSORS",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -93,9 +101,11 @@ public class GameView extends VerticalLayout implements View {
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
+                        displayWinner();
+
                     }
                 });
-        Button spoke = new Button("SPOKE",
+        spoke = new Button("SPOKE",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -104,9 +114,11 @@ public class GameView extends VerticalLayout implements View {
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
+                        displayWinner();
+
                     }
                 });
-        Button lizard = new Button("LIZARD",
+        lizard = new Button("LIZARD",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
@@ -115,11 +127,22 @@ public class GameView extends VerticalLayout implements View {
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
                         m.doMatch();
+                        displayWinner();
+
                     }
                 });
-
+        nextPlay = new Button("Play next",
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                      playNextShot();
+                    }
+                });
         bodyContent.addComponents(rock, paper, scissors, spoke, lizard);
-
+        bodyContent.addComponent(youShot);
+        bodyContent.addComponent(result);
+        bodyContent.addComponent(iaShot);
+        bodyContent.addComponent(nextPlay);
         topPanel.setContent(topContent);
         bodyPanel.setContent(bodyContent);
 
@@ -129,6 +152,37 @@ public class GameView extends VerticalLayout implements View {
         addComponent(bodyPanel);
     }
 
+    private void playNextShot()
+    {
+        youShot.setVisible(false);
+        iaShot.setVisible(false);
+        rock.setVisible(true);
+        spoke.setVisible(true);
+        lizard.setVisible(true);
+        scissors.setVisible(true);
+        paper.setVisible(true);
+        nextPlay.setVisible(false);
+        result.setVisible(false);
+    }
+
+    private void displayWinner()
+    {
+        youShot.setVisible(true);
+        iaShot.setVisible(true);
+        youScore.setValue(currentUser.getScore().toString());
+        iaScore.setValue(IA.getScore().toString());
+        youShot.setValue(String.format("    Your shot : %s   ", currentUser.getShot().toString()));
+        iaShot.setValue(String.format("    IA shot : %s   ", IA.getShot().toString()));
+        rock.setVisible(false);
+        spoke.setVisible(false);
+        lizard.setVisible(false);
+        scissors.setVisible(false);
+        paper.setVisible(false);
+        nextPlay.setVisible(true);
+        result.setVisible(true);
+        result.setValue(String.format("    %s wins !    ", m.getWinner().getName()));
+    }
+
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         UI ui = getUI();
@@ -136,6 +190,7 @@ public class GameView extends VerticalLayout implements View {
         Lobby lobby = Lobby.getInstance();
         currentUser = lobby.findUserByName(username);
         youLabel.setValue(username);
+        playNextShot();
     }
 
     private ShotKind IAShot() {

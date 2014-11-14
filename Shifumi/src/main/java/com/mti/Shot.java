@@ -40,6 +40,25 @@ public class Shot {
         return crushes;
     }
 
+    @Override
+    public String toString()
+    {
+        switch (kind){
+            case PAPER:
+                return "Paper";
+            case ROCK:
+                return "Rock";
+            case SCISSORS:
+                return "Scissors";
+            case SPOKE:
+                return "Spoke";
+            case LIZARD:
+                return "Lizard";
+            default:
+                return null;
+        }
+    }
+
     public Shot(ShotKind kind) {
         this.kind = kind;
         this.crushes = new ArrayList<ShotKind>();
