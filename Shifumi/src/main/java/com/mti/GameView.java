@@ -16,6 +16,9 @@ public class GameView extends VerticalLayout implements View {
     private final Label youLabel = new Label();
     private final Label youScore = new Label();
     private final Label iaScore = new Label();
+    private final Label youShot = new Label();
+    private final Label iaShot = new Label();
+    private final Label result = new Label();
     User IA = new User();
     User currentUser;
 
@@ -33,7 +36,14 @@ public class GameView extends VerticalLayout implements View {
         iaContent.setWidth(200, Unit.PIXELS);
         youContent.setWidth(200, Unit.PIXELS);
 
-        Button quitButton = new Button("Quit");
+        Button quitButton = new Button("Quit",
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        UI ui = getUI();
+                        getUI().getNavigator().navigateTo(Globals.VIEW_LOBBY);
+                    }
+                });
         Label iaLabel = new Label("IA");
         IA.setShot(new Shot(IAShot()));
 
