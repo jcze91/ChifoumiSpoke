@@ -30,9 +30,10 @@ public class GameView extends VerticalLayout implements View {
 
         HorizontalLayout youContent = new HorizontalLayout();
         HorizontalLayout iaContent = new HorizontalLayout();
-        iaContent.setWidth(100, Unit.PIXELS);
-        youContent.setWidth(100, Unit.PIXELS);
+        iaContent.setWidth(200, Unit.PIXELS);
+        youContent.setWidth(200, Unit.PIXELS);
 
+        Button quitButton = new Button("Quit");
         Label iaLabel = new Label("IA");
         IA.setShot(new Shot(IAShot()));
 
@@ -41,6 +42,7 @@ public class GameView extends VerticalLayout implements View {
         iaContent.addComponent(iaLabel);
         iaContent.addComponent(iaScore);
         topContent.addComponent(youContent);
+        topContent.addComponent(quitButton);
         topContent.addComponent(iaContent);
         topContent.setComponentAlignment(youContent, Alignment.MIDDLE_LEFT);
         topContent.setComponentAlignment(iaContent, Alignment.MIDDLE_RIGHT);
