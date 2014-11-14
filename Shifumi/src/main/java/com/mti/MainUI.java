@@ -29,6 +29,7 @@ public class MainUI extends UI
         // Create and register the views
         navigator.addView(Globals.VIEW_START, new StartView());
         navigator.addView(Globals.VIEW_LOBBY, new LobbyView());
+        navigator.addView(Globals.VIEW_GAME, new GameView());
 
         navigator.navigateTo(Globals.VIEW_START);
     }

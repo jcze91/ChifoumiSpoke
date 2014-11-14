@@ -25,10 +25,10 @@ public class StartView extends VerticalLayout implements View {
                         getUI().getNavigator().navigateTo(Globals.VIEW_LOBBY);
                     }
                 });
+        panelContent.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
         panelContent.addComponent(welcomeLabel);
         panelContent.addComponent(name);
         panelContent.addComponent(button);
-        panelContent.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
         panel.setContent(panelContent);
         addComponent(panel);
         setComponentAlignment(panel, Alignment.MIDDLE_CENTER);
