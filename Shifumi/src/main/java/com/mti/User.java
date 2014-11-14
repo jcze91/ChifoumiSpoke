@@ -10,15 +10,36 @@ import java.util.ArrayList;
  */
 public class User {
 
-    @Getter
-    @Setter
     private ArrayList<Match> matches;
-
-    @Getter
-    @Setter
     private Shot shot;
+    private Integer score;
+
+    public void setMatches(ArrayList<Match> matches) {
+        this.matches = matches;
+    }
+
+    public ArrayList<Match> getMatches() {
+        return matches;
+    }
+
+    public void setShot(Shot shot) {
+        this.shot = shot;
+    }
+
+    public Shot getShot() {
+        return shot;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
 
     public User() {
         this.matches = new ArrayList<Match>();
+        this.score = 0;
     }
 }

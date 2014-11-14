@@ -52,6 +52,12 @@
 			<artifactId>vaadin-client-compiled</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.12.6</version>
+            <scope>provided</scope>
+        </dependency>
 		<!--
 		  Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
 		  
@@ -89,17 +95,6 @@
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.14.8</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.12.6</version>
-        </dependency>
     </dependencies>
 
 	<build>

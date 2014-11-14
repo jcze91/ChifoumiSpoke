@@ -9,17 +9,36 @@ import java.util.ArrayList;
  * Created by Yayap on 14/11/14.
  */
 public class Shot {
-    @Getter
-    @Setter
+
     private ShotKind kind;
 
-    @Getter
-    @Setter
-    ArrayList<ShotKind> isCrushedBy;
+    public void setKind(ShotKind kind) {
+        this.kind = kind;
+    }
 
-    @Getter
-    @Setter
-    ArrayList<ShotKind> crushes;
+    public ShotKind getKind() {
+        return kind;
+    }
+
+    private ArrayList<ShotKind> isCrushedBy;
+
+    public void setIsCrushedBy(ArrayList<ShotKind> isCrushedBy) {
+        this.isCrushedBy = isCrushedBy;
+    }
+
+    public ArrayList<ShotKind> getIsCrushedBy() {
+        return isCrushedBy;
+    }
+
+    private ArrayList<ShotKind> crushes;
+
+    public void setCrushes(ArrayList<ShotKind> crushes) {
+        this.crushes = crushes;
+    }
+
+    public ArrayList<ShotKind> getCrushes() {
+        return crushes;
+    }
 
     public Shot(ShotKind kind) {
         this.kind = kind;

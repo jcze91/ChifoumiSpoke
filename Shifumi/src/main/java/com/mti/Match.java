@@ -10,21 +10,33 @@ import java.util.ArrayList;
  */
 public class Match {
 
-    @Getter
-    @Setter
     private User user1;
-
-    @Getter
-    @Setter
     private User user2;
-
-    @Getter
-    @Setter
     private User winner;
 
-    @Getter
-    @Setter
-    private Integer score;
+    public User getUser1() {
+        return this.user1;
+    }
+
+    public void setUser1(User user) {
+        this.user1 = user;
+    }
+
+    public User getUser2() {
+        return this.user2;
+    }
+
+    public void setUser2(User user) {
+        this.user2 = user;
+    }
+
+    public void setWinner(User winner) {
+        this.winner = winner;
+    }
+
+    public User getWinner() {
+        return winner;
+    }
 
     public Match(User user1, User user2){
         this.user1 = user1;
@@ -32,6 +44,11 @@ public class Match {
     }
 
     private void doMatch(){
-       
+        Shot shot1 = this.user1.getShot();
+        Shot shot2 = this.user2.getShot();
+
+        this.winner = shot1.getCrushes().contains(shot2) ? this.user1 : this.user2;
+
+        this.winner.setScore(this.winner.getScore()+1);
     }
 }
