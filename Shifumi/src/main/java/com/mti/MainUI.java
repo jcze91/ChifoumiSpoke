@@ -40,6 +40,7 @@ public class MainUI extends UI
         navigator.addView(Globals.VIEW_GAME, new GameView());
 
         navigator.navigateTo(Globals.VIEW_START);
+        Lobby lobby = Lobby.getInstance();
     }
 
 }

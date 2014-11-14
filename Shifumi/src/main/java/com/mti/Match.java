@@ -43,7 +43,7 @@ public class Match {
         this.user2 = user2;
     }
 
-    private void doMatch(){
+    public void doMatch(){
         Shot shot1 = this.user1.getShot();
         Shot shot2 = this.user2.getShot();
 
