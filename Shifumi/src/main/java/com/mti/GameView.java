@@ -4,6 +4,11 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by JULIEN on 11/14/2014.
  */
@@ -11,6 +16,7 @@ public class GameView extends VerticalLayout implements View {
     private final Label youLabel = new Label();
     private final Label youScore = new Label();
     private final Label iaScore = new Label();
+    User IA = new User();
 
     public GameView() {
         setSizeFull();
@@ -27,6 +33,10 @@ public class GameView extends VerticalLayout implements View {
         youContent.setWidth(100, Unit.PIXELS);
 
         Label iaLabel = new Label("IA");
+        String username = (String)getUI().getSession().getAttribute(Globals.SESSION_USERNAME);
+        Lobby lobby = Lobby.getInstance();
+        User currentUser = lobby.findUserByName(username);
+        IA.setShot(new Shot(IAShot()));
 
         youContent.addComponent(youLabel);
         youContent.addComponent(youScore);
@@ -43,30 +53,55 @@ public class GameView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
+                        currentUser.setShot(new Shot(ShotKind.PAPER));
+                        Match m = new Match(currentUser, IA);
+                        currentUser.getMatches().add(m);
+                        IA.getMatches().add(m);
+                        m.doMatch();
                     }
                 });
         Button paper = new Button("PAPER",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
+                        currentUser.setShot(new Shot(ShotKind.ROCK));
+                        Match m = new Match(currentUser, IA);
+                        currentUser.getMatches().add(m);
+                        IA.getMatches().add(m);
+                        m.doMatch();
                     }
                 });
         Button scissors = new Button("SCISSORS",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
+                        currentUser.setShot(new Shot(ShotKind.SCISSORS));
+                        Match m = new Match(currentUser, IA);
+                        currentUser.getMatches().add(m);
+                        IA.getMatches().add(m);
+                        m.doMatch();
                     }
                 });
         Button spoke = new Button("SPOKE",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
+                        currentUser.setShot(new Shot(ShotKind.SPOKE));
+                        Match m = new Match(currentUser, IA);
+                        currentUser.getMatches().add(m);
+                        IA.getMatches().add(m);
+                        m.doMatch();
                     }
                 });
         Button lizard = new Button("LIZARD",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
+                        currentUser.setShot(new Shot(ShotKind.LIZARD));
+                        Match m = new Match(currentUser, IA);
+                        currentUser.getMatches().add(m);
+                        IA.getMatches().add(m);
+                        m.doMatch();
                     }
                 });
 
@@ -86,5 +121,14 @@ public class GameView extends VerticalLayout implements View {
         UI ui = getUI();
         String username = (String)ui.getSession().getAttribute(Globals.SESSION_USERNAME);
         youLabel.setValue(username);
+    }
+
+    private ShotKind IAShot() {
+        final List<ShotKind> VALUES =
+                Collections.unmodifiableList(Arrays.asList(ShotKind.values()));
+        final int SIZE = VALUES.size();
+        final Random RANDOM = new Random();
+
+        return VALUES.get(RANDOM.nextInt(SIZE));
     }
 }

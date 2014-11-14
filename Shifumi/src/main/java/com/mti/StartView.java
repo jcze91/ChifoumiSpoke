@@ -10,6 +10,8 @@ import com.vaadin.ui.*;
 public class StartView extends VerticalLayout implements View {
     public StartView() {
         setSizeFull();
+        setHeight(800, Unit.PIXELS);
+
         Panel panel = new Panel();
         VerticalLayout panelContent = new VerticalLayout();
 

@@ -13,6 +13,7 @@ public class User {
     private ArrayList<Match> matches;
     private Shot shot;
     private Integer score;
+    private String name;
 
     public void setMatches(ArrayList<Match> matches) {
         this.matches = matches;
@@ -36,6 +37,14 @@ public class User {
 
     public Integer getScore() {
         return score;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public User() {

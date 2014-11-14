@@ -23,7 +23,10 @@ public class LobbyView extends VerticalLayout implements View {
 
     public LobbyView() {
         setSizeFull();
+
         Panel panel = new Panel();
+        panel.setHeight(800, Unit.PIXELS);
+
         VerticalLayout panelContent = new VerticalLayout();
         HorizontalLayout labelLayout = new HorizontalLayout();
         labelLayout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
@@ -73,7 +76,7 @@ public class LobbyView extends VerticalLayout implements View {
         accept.setVisible(false);
         refuse.setVisible(false);
 
-        int timeout = randInt(0, 15) * 1000;
+        int timeout = randInt(0, 5) * 1000;
 
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(new Runnable(){
