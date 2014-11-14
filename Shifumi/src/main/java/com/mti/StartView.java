@@ -25,6 +25,10 @@ public class StartView extends VerticalLayout implements View {
                         ui.getSession().setAttribute(Globals.SESSION_USERNAME,
                                 name.getValue());
                         getUI().getNavigator().navigateTo(Globals.VIEW_LOBBY);
+                        User u = new User();
+                        u.setName(name.getValue());
+                        Lobby.getInstance().getUsers().add(u);
+
                     }
                 });
         panelContent.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);

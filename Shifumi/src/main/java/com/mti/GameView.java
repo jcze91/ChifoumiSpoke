@@ -17,6 +17,7 @@ public class GameView extends VerticalLayout implements View {
     private final Label youScore = new Label();
     private final Label iaScore = new Label();
     User IA = new User();
+    User currentUser;
 
     public GameView() {
         setSizeFull();
@@ -33,9 +34,6 @@ public class GameView extends VerticalLayout implements View {
         youContent.setWidth(100, Unit.PIXELS);
 
         Label iaLabel = new Label("IA");
-        String username = (String)getUI().getSession().getAttribute(Globals.SESSION_USERNAME);
-        Lobby lobby = Lobby.getInstance();
-        User currentUser = lobby.findUserByName(username);
         IA.setShot(new Shot(IAShot()));
 
         youContent.addComponent(youLabel);
@@ -120,6 +118,8 @@ public class GameView extends VerticalLayout implements View {
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         UI ui = getUI();
         String username = (String)ui.getSession().getAttribute(Globals.SESSION_USERNAME);
+        Lobby lobby = Lobby.getInstance();
+        currentUser = lobby.findUserByName(username);
         youLabel.setValue(username);
     }
 
