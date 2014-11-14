@@ -1,20 +1,28 @@
 package com.mti;
 
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.Constants;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.UI;
 
 @Theme("mytheme")
 @SuppressWarnings("serial")
+@Push(value = PushMode.AUTOMATIC)
 public class MainUI extends UI
 {
 
-    @WebServlet(value = "/*", asyncSupported = true)
+    @WebServlet(value = "/*", asyncSupported = true,
+            initParams = {
+                    @WebInitParam(name = Constants.SERVLET_PARAMETER_PUSH_MODE,
+                            value = "automatic")})
     @VaadinServletConfiguration(productionMode = false, ui = MainUI.class)
     public static class Servlet extends VaadinServlet {
     }
