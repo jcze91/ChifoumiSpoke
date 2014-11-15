@@ -76,7 +76,7 @@ public class LobbyView extends VerticalLayout implements View {
         accept.setVisible(false);
         refuse.setVisible(false);
 
-        int timeout = randInt(0, 5) * 1000;
+        int timeout = randInt(0, 60) * 1000;
 
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(new Runnable(){

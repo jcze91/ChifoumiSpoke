@@ -47,8 +47,12 @@ public class Match {
         Shot shot1 = this.user1.getShot();
         Shot shot2 = this.user2.getShot();
 
-        this.winner = shot1.getCrushes().contains(shot2) ? this.user1 : this.user2;
+        if (!shot1.getKind().equals(shot2.getKind())) {
+            this.winner = shot1.getCrushes().contains(shot2.getKind()) ? this.user1 : this.user2;
 
-        this.winner.setScore(this.winner.getScore()+1);
+            this.winner.setScore(this.winner.getScore() + 1);
+        } else {
+            this.winner = null;
+        }
     }
 }

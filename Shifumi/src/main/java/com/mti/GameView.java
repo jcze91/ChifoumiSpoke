@@ -36,7 +36,7 @@ public class GameView extends VerticalLayout implements View {
         topPanel.setHeight(50, Unit.PIXELS);
         VerticalLayout content = new VerticalLayout();
         HorizontalLayout topContent = new HorizontalLayout();
-        HorizontalLayout bodyContent = new HorizontalLayout();
+        VerticalLayout bodyContent = new VerticalLayout();
 
         HorizontalLayout youContent = new HorizontalLayout();
         HorizontalLayout iaContent = new HorizontalLayout();
@@ -71,7 +71,7 @@ public class GameView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.PAPER));
+                        currentUser.setShot(new Shot(ShotKind.ROCK));
                         m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
@@ -83,7 +83,7 @@ public class GameView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.ROCK));
+                        currentUser.setShot(new Shot(ShotKind.PAPER));
                         m = new Match(currentUser, IA);
                         currentUser.getMatches().add(m);
                         IA.getMatches().add(m);
@@ -140,8 +140,8 @@ public class GameView extends VerticalLayout implements View {
                 });
         bodyContent.addComponents(rock, paper, scissors, spoke, lizard);
         bodyContent.addComponent(youShot);
-        bodyContent.addComponent(result);
         bodyContent.addComponent(iaShot);
+        bodyContent.addComponent(result);
         bodyContent.addComponent(nextPlay);
         topPanel.setContent(topContent);
         bodyPanel.setContent(bodyContent);
@@ -163,6 +163,7 @@ public class GameView extends VerticalLayout implements View {
         paper.setVisible(true);
         nextPlay.setVisible(false);
         result.setVisible(false);
+        IA.setShot(new Shot(IAShot()));
     }
 
     private void displayWinner()
@@ -180,7 +181,10 @@ public class GameView extends VerticalLayout implements View {
         paper.setVisible(false);
         nextPlay.setVisible(true);
         result.setVisible(true);
-        result.setValue(String.format("    %s wins !    ", m.getWinner().getName()));
+        if (m.getWinner() == null)
+            result.setValue("Egalité");
+        else
+            result.setValue(String.format("    %s wins !    ", m.getWinner().getName()));
     }
 
     @Override
