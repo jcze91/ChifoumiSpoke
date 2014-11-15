@@ -1,3 +1,4 @@
+
 package com.mti.model;
 
 import java.lang.Integer;import java.lang.String;import java.util.ArrayList;
@@ -11,6 +12,11 @@ public class User {
     private Shot shot;
     private Integer score;
     private String name;
+
+    public User(String username)
+    {
+        this.name = username;
+    }
 
     public void setMatches(ArrayList<Match> matches) {
         this.matches = matches;

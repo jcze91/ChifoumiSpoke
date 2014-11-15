@@ -10,4 +10,6 @@ import com.mvplite.view.NavigateableView;
 public interface GameView extends NavigateableView {
     public void playNextShot();
     public void displayWinner(User currentUser, User IA, Match m);
+    public void increaseBar(float offset);
+    public void setBar(float value);
 }

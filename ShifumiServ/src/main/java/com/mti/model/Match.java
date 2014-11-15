@@ -1,5 +1,9 @@
 package com.mti.model;
 
+
+
+import java.util.ArrayList;
+
 /**
  * Created by Yayap on 14/11/14.
  */

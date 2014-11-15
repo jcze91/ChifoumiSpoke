@@ -34,6 +34,7 @@ public class GameViewImpl extends VerticalLayout implements GameView {
     private Button lizard;
     private Button spoke;
     private Button nextPlay;
+    private ProgressBar bar;
 
     private final NavigationController navigationController;
     private final EventBus eventBus;
@@ -54,19 +55,19 @@ public class GameViewImpl extends VerticalLayout implements GameView {
 
     private void generateUI()
     {
-        setSizeFull();
         Panel topPanel = new Panel();
         Panel bodyPanel = new Panel();
-        topPanel.setHeight(50, Unit.PIXELS);
-        VerticalLayout content = new VerticalLayout();
+
         HorizontalLayout topContent = new HorizontalLayout();
         VerticalLayout bodyContent = new VerticalLayout();
-
+        topPanel.setStyleName("game_top_panel");
+        topPanel.setHeight("50px");
+        bodyPanel.setStyleName("game_body_panel");
         HorizontalLayout youContent = new HorizontalLayout();
         HorizontalLayout iaContent = new HorizontalLayout();
-        iaContent.setWidth(200, Unit.PIXELS);
+        HorizontalLayout quitBtnContent = new HorizontalLayout();
         youContent.setWidth(200, Unit.PIXELS);
-
+        iaContent.setWidth(200, Unit.PIXELS);
         Button quitButton = new Button("Quit",
                 new Button.ClickListener() {
                     @Override
@@ -74,16 +75,14 @@ public class GameViewImpl extends VerticalLayout implements GameView {
                         presenter.goBackToLobby();
                     }
                 });
+        bar = new ProgressBar(0.0f);
+        bar.setWidth("400px");
         Label iaLabel = new Label("IA");
-        youContent.addComponent(youLabel);
-        youContent.addComponent(youScore);
-        iaContent.addComponent(iaLabel);
-        iaContent.addComponent(iaScore);
-        topContent.addComponent(youContent);
-        topContent.addComponent(quitButton);
-        topContent.addComponent(iaContent);
-        topContent.setComponentAlignment(youContent, Alignment.MIDDLE_LEFT);
-        topContent.setComponentAlignment(iaContent, Alignment.MIDDLE_RIGHT);
+        youContent.addComponents(youLabel, youScore);
+        iaContent.addComponents(iaLabel, iaScore);
+        quitBtnContent.addComponents(quitButton, bar);
+        quitBtnContent.setComponentAlignment(quitButton, Alignment.MIDDLE_CENTER);
+        topContent.addComponents(youContent, iaContent, quitBtnContent);
 
         bodyContent.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
 
@@ -130,59 +129,70 @@ public class GameViewImpl extends VerticalLayout implements GameView {
                     }
                 });
         bodyContent.addComponents(rock, paper, scissors, spoke, lizard);
-        bodyContent.addComponent(youShot);
-        bodyContent.addComponent(iaShot);
-        bodyContent.addComponent(result);
-        bodyContent.addComponent(nextPlay);
+        bodyContent.addComponents(youShot, iaShot, result, nextPlay);
         topPanel.setContent(topContent);
         bodyPanel.setContent(bodyContent);
 
-        setDefaultComponentAlignment(Alignment.TOP_CENTER);
-
-        addComponent(topPanel);
-        addComponent(bodyPanel);
+        addComponents(topPanel, bodyPanel);
     }
 
     @Override
     public void playNextShot()
     {
-        youShot.setVisible(false);
-        iaShot.setVisible(false);
-        rock.setVisible(true);
-        spoke.setVisible(true);
-        lizard.setVisible(true);
-        scissors.setVisible(true);
-        paper.setVisible(true);
-        nextPlay.setVisible(false);
-        result.setVisible(false);
+        getUI().access(() -> {
+            youShot.setVisible(false);
+            iaShot.setVisible(false);
+            rock.setVisible(true);
+            spoke.setVisible(true);
+            lizard.setVisible(true);
+            scissors.setVisible(true);
+            paper.setVisible(true);
+            nextPlay.setVisible(false);
+            result.setVisible(false);
+            bar.setValue(0.0f);
+        });
+    }
+    @Override
+    public void setBar(float value) {
+        getUI().access(() -> {
+            bar.setValue(value);
+        });
+    }
+    @Override
+    public void increaseBar(float offset) {
+        getUI().access(() -> {
+            bar.setValue(bar.getValue() + offset);
+        });
     }
 
     @Override
     public void displayWinner(User currentUser, User IA, Match m)
     {
-        youShot.setVisible(true);
-        iaShot.setVisible(true);
-        youScore.setValue(currentUser.getScore().toString());
-        iaScore.setValue(IA.getScore().toString());
-        youShot.setValue(String.format("    Your shot : %s   ", currentUser.getShot().toString()));
-        iaShot.setValue(String.format("    IA shot : %s   ", IA.getShot().toString()));
-        rock.setVisible(false);
-        spoke.setVisible(false);
-        lizard.setVisible(false);
-        scissors.setVisible(false);
-        paper.setVisible(false);
-        nextPlay.setVisible(true);
-        result.setVisible(true);
-        if (m.getWinner() == null)
-            result.setValue("Egalité");
-        else
-            result.setValue(String.format("    %s wins !    ", m.getWinner().getName()));
+        getUI().access(() -> {
+            youShot.setVisible(true);
+            iaShot.setVisible(true);
+            youScore.setValue(currentUser.getScore().toString());
+            iaScore.setValue(IA.getScore().toString());
+            youShot.setValue(String.format("Your shot : %s", currentUser.getShot().toString()));
+            iaShot.setValue(String.format("IA shot : %s", IA.getShot().toString()));
+            rock.setVisible(false);
+            spoke.setVisible(false);
+            lizard.setVisible(false);
+            scissors.setVisible(false);
+            paper.setVisible(false);
+            nextPlay.setVisible(true);
+            result.setVisible(true);
+            if (m.getWinner() == null)
+                result.setValue("Egalité");
+            else
+                result.setValue(String.format("%s wins !", m.getWinner().getName()));
+        });
     }
 
     public void init() {
         UI ui = getUI();
         youLabel.setValue(presenter.getCurrentUser().getName());
-        playNextShot();
+        presenter.playNextShot();
     }
     @EventHandler
     public void onShowStartViewRequired(ShowStartViewEvent e) {

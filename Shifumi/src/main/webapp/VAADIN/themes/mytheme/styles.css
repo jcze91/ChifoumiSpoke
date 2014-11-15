@@ -11995,3 +11995,15 @@ div.v-layout.v-horizontal.v-widget {
 	width: 19px;
 	overflow: hidden;
 }
+
+.mytheme .v-slot-game_top_panel {
+	height: 50px !important;
+}
+
+.mytheme .v-slot-game_body_panel {
+	height: 700px !important;
+}
+
+.mytheme .game_body_panel {
+	height: 100% !important;
+}
