@@ -1,5 +1,14 @@
-package com.mti;
+package com.mti.view;
 
+import com.mti.*;
+import com.mti.event.ShowStartViewEvent;
+import com.mti.model.*;
+import com.mti.presenter.GamePresenter;
+import com.mti.presenter.LobbyPresenter;
+import com.mvplite.event.EventBus;
+import com.mvplite.event.EventHandler;
+import com.mvplite.event.ShowViewEvent;
+import com.mvplite.view.NavigationController;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
@@ -12,24 +21,39 @@ import java.util.Random;
 /**
  * Created by JULIEN on 11/14/2014.
  */
-public class GameView extends VerticalLayout implements View {
+public class GameViewImpl extends VerticalLayout implements GameView {
     private final Label youLabel = new Label();
     private final Label youScore = new Label();
     private final Label iaScore = new Label();
     private final Label youShot = new Label();
     private final Label iaShot = new Label();
     private final Label result = new Label();
-    private final Button rock;
-    private final Button scissors;
-    private final Button paper;
-    private final Button lizard;
-    private final Button spoke;
-    private final Button nextPlay;
-    User IA = new User();
-    User currentUser;
-    private Match m = null;
+    private Button rock;
+    private Button scissors;
+    private Button paper;
+    private Button lizard;
+    private Button spoke;
+    private Button nextPlay;
 
-    public GameView() {
+    private final NavigationController navigationController;
+    private final EventBus eventBus;
+    private final GamePresenter presenter;
+
+    public GameViewImpl(User user, EventBus eventBus,
+                  NavigationController navigationController) {
+        this.eventBus = eventBus;
+        this.navigationController = navigationController;
+        this.presenter = new GamePresenter(this, eventBus, user);
+        bind();
+        setSizeFull();
+        generateUI();
+    }
+    private void bind(){
+        eventBus.addHandler(this);
+    }
+
+    private void generateUI()
+    {
         setSizeFull();
         Panel topPanel = new Panel();
         Panel bodyPanel = new Panel();
@@ -47,14 +71,10 @@ public class GameView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        UI ui = getUI();
-                        getUI().getNavigator().navigateTo(Globals.VIEW_LOBBY);
+                        presenter.goBackToLobby();
                     }
                 });
         Label iaLabel = new Label("IA");
-        IA.setName("IA");
-        IA.setShot(new Shot(IAShot()));
-
         youContent.addComponent(youLabel);
         youContent.addComponent(youScore);
         iaContent.addComponent(iaLabel);
@@ -71,71 +91,42 @@ public class GameView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.ROCK));
-                        m = new Match(currentUser, IA);
-                        currentUser.getMatches().add(m);
-                        IA.getMatches().add(m);
-                        m.doMatch();
-                        displayWinner();
+                        presenter.shot(ShotKind.ROCK);
                     }
                 });
         paper = new Button("PAPER",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.PAPER));
-                        m = new Match(currentUser, IA);
-                        currentUser.getMatches().add(m);
-                        IA.getMatches().add(m);
-                        m.doMatch();
-                        displayWinner();
-
+                        presenter.shot(ShotKind.PAPER);
                     }
                 });
         scissors = new Button("SCISSORS",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.SCISSORS));
-                        m = new Match(currentUser, IA);
-                        currentUser.getMatches().add(m);
-                        IA.getMatches().add(m);
-                        m.doMatch();
-                        displayWinner();
-
+                        presenter.shot(ShotKind.SCISSORS);
                     }
                 });
         spoke = new Button("SPOKE",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.SPOKE));
-                        m = new Match(currentUser, IA);
-                        currentUser.getMatches().add(m);
-                        IA.getMatches().add(m);
-                        m.doMatch();
-                        displayWinner();
-
+                        presenter.shot(ShotKind.SPOKE);
                     }
                 });
         lizard = new Button("LIZARD",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        currentUser.setShot(new Shot(ShotKind.LIZARD));
-                        m = new Match(currentUser, IA);
-                        currentUser.getMatches().add(m);
-                        IA.getMatches().add(m);
-                        m.doMatch();
-                        displayWinner();
-
+                        presenter.shot(ShotKind.LIZARD);
                     }
                 });
         nextPlay = new Button("Play next",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                      playNextShot();
+                        presenter.playNextShot();
                     }
                 });
         bodyContent.addComponents(rock, paper, scissors, spoke, lizard);
@@ -152,7 +143,8 @@ public class GameView extends VerticalLayout implements View {
         addComponent(bodyPanel);
     }
 
-    private void playNextShot()
+    @Override
+    public void playNextShot()
     {
         youShot.setVisible(false);
         iaShot.setVisible(false);
@@ -163,10 +155,10 @@ public class GameView extends VerticalLayout implements View {
         paper.setVisible(true);
         nextPlay.setVisible(false);
         result.setVisible(false);
-        IA.setShot(new Shot(IAShot()));
     }
 
-    private void displayWinner()
+    @Override
+    public void displayWinner(User currentUser, User IA, Match m)
     {
         youShot.setVisible(true);
         iaShot.setVisible(true);
@@ -187,22 +179,26 @@ public class GameView extends VerticalLayout implements View {
             result.setValue(String.format("    %s wins !    ", m.getWinner().getName()));
     }
 
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
+    public void init() {
         UI ui = getUI();
-        String username = (String)ui.getSession().getAttribute(Globals.SESSION_USERNAME);
-        Lobby lobby = Lobby.getInstance();
-        currentUser = lobby.findUserByName(username);
-        youLabel.setValue(username);
+        youLabel.setValue(presenter.getCurrentUser().getName());
         playNextShot();
     }
+    @EventHandler
+    public void onShowStartViewRequired(ShowStartViewEvent e) {
+    }
+    @Override
+    public String getUriFragment() {
+        return "game";
+    }
 
-    private ShotKind IAShot() {
-        final List<ShotKind> VALUES =
-                Collections.unmodifiableList(Arrays.asList(ShotKind.values()));
-        final int SIZE = VALUES.size();
-        final Random RANDOM = new Random();
+    @Override
+    public String getBreadcrumbTitle() {
+        return "Game";
+    }
 
-        return VALUES.get(RANDOM.nextInt(SIZE));
+    @Override
+    public ShowViewEvent getEventToShowThisView() {
+        return null;
     }
 }

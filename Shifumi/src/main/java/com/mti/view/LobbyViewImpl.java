@@ -1,29 +1,53 @@
-package com.mti;
+package com.mti.view;
 
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
+import com.mti.Globals;
+import com.mti.event.ShowStartViewEvent;
+import com.mti.model.User;
+import com.mti.event.EnterLobbyViewEvent;
+import com.mti.presenter.LobbyPresenter;
+import com.mti.presenter.StartPresenter;
+import com.mvplite.event.EventBus;
+import com.mvplite.event.EventHandler;
+import com.mvplite.event.ShowViewEvent;
+import com.mvplite.view.NavigationController;
 import com.vaadin.server.Page;
 import com.vaadin.ui.*;
 
 import java.util.Random;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.*;
 
 /**
  * Created by JULIEN on 11/14/2014.
  */
 
-public class LobbyView extends VerticalLayout implements View {
+public class LobbyViewImpl extends VerticalLayout implements LobbyView {
 
     private final Label label = new Label();
     private final Timer timer = new Timer();
-    private final Button accept;
-    private final Button refuse;
+    private Button accept;
+    private Button refuse;
 
-    public LobbyView() {
+    private final NavigationController navigationController;
+    private final EventBus eventBus;
+    private final LobbyPresenter presenter;
+    private final User user;
+
+    public LobbyViewImpl(User user, EventBus eventBus,
+                         NavigationController navigationController) {
+        this.user = user;
+        this.eventBus = eventBus;
+        this.navigationController = navigationController;
+        this.presenter = new LobbyPresenter(this, eventBus);
+        bind();
         setSizeFull();
-
+        generateUI();
+    }
+    private void bind(){
+        eventBus.addHandler(this);
+    }
+    private void generateUI()
+    {
         Panel panel = new Panel();
         panel.setHeight(800, Unit.PIXELS);
 
@@ -37,15 +61,14 @@ public class LobbyView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        UI ui = getUI();
-                        getUI().getNavigator().navigateTo(Globals.VIEW_GAME);
+                        presenter.acceptOpponent();
                     }
                 });
         refuse = new Button("Refuse",
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        searchOpponent();
+                        presenter.searchOpponent();
                     }
                 });
 
@@ -60,34 +83,27 @@ public class LobbyView extends VerticalLayout implements View {
         setComponentAlignment(panel, Alignment.MIDDLE_CENTER);
     }
 
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
-        UI ui = getUI();
-        String username = (String)ui.getSession().getAttribute(Globals.SESSION_USERNAME);
-        Notification notif = new Notification(String.format("Hey %s ! Welcome in the ChifumiSpoke !", username));
-        notif.setDelayMsec(1000);
-        notif.show(Page.getCurrent());
-        searchOpponent();
+    @EventHandler
+    public void onShowStartViewRequired(ShowStartViewEvent e) {
     }
 
-    private void searchOpponent()
+    public void init() {
+        Notification notif = new Notification(String.format("Hey %s ! Welcome in the ChifumiSpoke !", user.getName()));
+        notif.setDelayMsec(1000);
+        notif.show(Page.getCurrent());
+        presenter.searchOpponent();
+    }
+
+    @Override
+    public void searchOpponent()
     {
         label.setValue("Waiting for an opponent ...");
         accept.setVisible(false);
         refuse.setVisible(false);
-
-        int timeout = randInt(0, 60) * 1000;
-
-        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(new Runnable(){
-            @Override
-            public void run(){
-                findOpponent();
-            }
-        }, timeout, TimeUnit.MILLISECONDS);
     }
 
-    private void findOpponent()
+    @Override
+    public void findOpponent()
     {
         getUI().access(() -> {
             accept.setVisible(true);
@@ -95,10 +111,18 @@ public class LobbyView extends VerticalLayout implements View {
             label.setValue("Opponent found !");
         });
     }
+    @Override
+    public String getUriFragment() {
+        return "lobby";
+    }
 
-    private int randInt(int min, int max) {
-        Random rand = new Random();
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return randomNum;
+    @Override
+    public String getBreadcrumbTitle() {
+        return "Lobby";
+    }
+
+    @Override
+    public ShowViewEvent getEventToShowThisView() {
+        return null;
     }
 }
