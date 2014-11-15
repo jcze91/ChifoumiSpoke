@@ -51,6 +51,8 @@ public class Shot {
                 return "Spoke";
             case LIZARD:
                 return "Lizard";
+            case TIMEOUT:
+                return "Timeout";
             default:
                 return null;
         }
@@ -96,6 +98,13 @@ public class Shot {
 
                 this.isCrushedBy.add(ShotKind.ROCK);
                 this.isCrushedBy.add(ShotKind.SCISSORS);
+                break;
+            case TIMEOUT:
+                this.isCrushedBy.add(ShotKind.ROCK);
+                this.isCrushedBy.add(ShotKind.SCISSORS);
+                this.isCrushedBy.add(ShotKind.PAPER);
+                this.isCrushedBy.add(ShotKind.SPOKE);
+                this.isCrushedBy.add(ShotKind.LIZARD);
                 break;
         }
     }

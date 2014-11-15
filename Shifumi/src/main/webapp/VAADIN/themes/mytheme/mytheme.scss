@@ -32,4 +32,14 @@
 @mixin mytheme {
   @include valo;
   // Insert your own theme rules here
+
+  .v-slot-game_top_panel {
+    height:50px !important;
+  }
+  .v-slot-game_body_panel {
+    height:700px !important;
+  }
+  .game_body_panel {
+    height:100% !important;
+  }
 }
