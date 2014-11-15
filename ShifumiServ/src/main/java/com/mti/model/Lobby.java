@@ -1,4 +1,4 @@
-package com.mti;
+package com.mti.model;
 
 
 import java.util.ArrayList;

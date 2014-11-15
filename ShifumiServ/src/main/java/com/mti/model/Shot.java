@@ -1,7 +1,5 @@
-package com.mti;
+package com.mti.model;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 

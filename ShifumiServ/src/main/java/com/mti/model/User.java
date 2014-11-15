@@ -1,7 +1,4 @@
-package com.mti;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.mti.model;
 
 import java.lang.Integer;import java.lang.String;import java.util.ArrayList;
 
@@ -47,8 +44,9 @@ public class User {
         return name;
     }
 
-    public User() {
+    public User(String name) {
         this.matches = new ArrayList<Match>();
         this.score = 0;
+        this.name = name;
     }
 }
