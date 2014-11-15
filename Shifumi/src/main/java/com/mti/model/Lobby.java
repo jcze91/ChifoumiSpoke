@@ -1,8 +1,4 @@
-package com.mti;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.atmosphere.config.service.Singleton;
+package com.mti.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;

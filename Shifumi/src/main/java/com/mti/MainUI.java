@@ -3,13 +3,21 @@ package com.mti;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 
-import com.mti.view.GameView;
-import com.mti.view.LobbyView;
-import com.mti.view.StartView;
+import com.github.wolfie.refresher.Refresher;
+import com.mti.event.EnterLobbyViewEvent;
+import com.mti.event.ShowGameViewEvent;
+import com.mti.event.ShowStartViewEvent;
+import com.mti.model.User;
+import com.mti.view.GameViewImpl;
+import com.mti.view.LobbyViewImpl;
+import com.mti.view.StartViewImpl;
+import com.mvplite.event.EventBus;
+import com.mvplite.event.EventHandler;
+import com.mvplite.event.RefresherGlobalEventBusDispatcher;
+import com.mvplite.view.LiteNavigationController;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Constants;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -32,20 +40,59 @@ public class MainUI extends UI
     public static class Servlet extends VaadinServlet {
     }
 
-    Navigator navigator;
+    private final EventBus eventBus = new EventBus();
+    private StartViewImpl startView;
+    private LobbyViewImpl lobbyView;
+    private GameViewImpl gameView;
+    private LiteNavigationController navigationController;
+    private RefresherGlobalEventBusDispatcher globalDispatcher;
+    private User user;
 
     @Override
     protected void init(VaadinRequest request) {
-        // Create a navigator to control the views
-        navigator = new Navigator(this, this);
+        bind();
+        navigationController = new LiteNavigationController(eventBus);
+        navigationController.setFire404OnUnknownUriFragment(false);
+        globalDispatcher = new RefresherGlobalEventBusDispatcher(
+                "toto", "1",
+                null, eventBus);
 
-        // Create and register the views
-        navigator.addView(Globals.VIEW_START, new StartView());
-        navigator.addView(Globals.VIEW_LOBBY, new LobbyView());
-        navigator.addView(Globals.VIEW_GAME, new GameView());
+        Refresher refresher = new Refresher();
+        addExtension(refresher);
+        startView = new StartViewImpl(eventBus, navigationController);
 
-        navigator.navigateTo(Globals.VIEW_START);
-        Lobby lobby = Lobby.getInstance();
+        setContent(startView);
     }
 
+    @EventHandler
+    public void onShowStartViewRequired(ShowStartViewEvent e) {
+    }
+    @EventHandler
+    public void onEnterLobbyEvent(EnterLobbyViewEvent e) {
+
+        user = e.getUser();
+        String username = (String)getUI().getSession().getAttribute(Globals.SESSION_USERNAME);
+        String sessionId = getSession().getSession().getId();
+
+        lobbyView = new LobbyViewImpl(user, eventBus, navigationController);
+
+        setContent(lobbyView);
+        lobbyView.init();
+        globalDispatcher = new RefresherGlobalEventBusDispatcher(username, sessionId,
+                null, eventBus);
+
+        Refresher refresher = new Refresher();
+        addExtension(refresher);
+    }
+
+    @EventHandler
+    public void onShowGameEvent(ShowGameViewEvent e) {
+        gameView = new GameViewImpl(user, eventBus, navigationController);
+        setContent(gameView);
+        gameView.init();
+    }
+
+    private void bind(){
+        eventBus.addHandler(this);
+    }
 }
