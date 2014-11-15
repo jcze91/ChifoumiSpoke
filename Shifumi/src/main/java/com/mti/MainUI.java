@@ -3,6 +3,9 @@ package com.mti;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 
+import com.mti.view.GameView;
+import com.mti.view.LobbyView;
+import com.mti.view.StartView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -21,8 +24,10 @@ public class MainUI extends UI
 
     @WebServlet(value = "/*", asyncSupported = true,
             initParams = {
-                    @WebInitParam(name = Constants.SERVLET_PARAMETER_PUSH_MODE,
-                            value = "automatic")})
+            @WebInitParam(name = Constants.SERVLET_PARAMETER_PRODUCTION_MODE,
+                    value = "false"),
+            @WebInitParam(name = Constants.SERVLET_PARAMETER_PUSH_MODE,
+                    value = "automatic")})
     @VaadinServletConfiguration(productionMode = false, ui = MainUI.class)
     public static class Servlet extends VaadinServlet {
     }

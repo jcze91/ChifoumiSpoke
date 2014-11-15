@@ -1,5 +1,6 @@
-package com.mti;
+package com.mti.view;
 
+import com.mti.Globals;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;

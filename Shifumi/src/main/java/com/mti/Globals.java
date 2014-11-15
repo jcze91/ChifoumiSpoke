@@ -4,10 +4,10 @@ package com.mti;
  * Created by JULIEN on 11/14/2014.
  */
 public class Globals {
-    protected static final String VIEW_START = "start";
-    protected static final String VIEW_LOBBY = "lobby";
-    protected static final String VIEW_GAME = "game";
+    public static final String VIEW_START = "start";
+    public static final String VIEW_LOBBY = "lobby";
+    public static final String VIEW_GAME = "game";
 
-    protected static final String SESSION_USERNAME = "username";
+    public static final String SESSION_USERNAME = "username";
 
 }

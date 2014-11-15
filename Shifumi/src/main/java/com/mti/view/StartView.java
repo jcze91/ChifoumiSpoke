@@ -1,5 +1,8 @@
-package com.mti;
+package com.mti.view;
 
+import com.mti.Globals;
+import com.mti.Lobby;
+import com.mti.User;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
