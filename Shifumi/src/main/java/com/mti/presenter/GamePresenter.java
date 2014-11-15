@@ -28,17 +28,18 @@ import java.util.concurrent.TimeUnit;
 public class GamePresenter extends Presenter<GameView> implements Serializable {
 
     private User currentUser;
+    private User opponent;
     private User IA;
     private Match m;
     private float timerShot;
     private ScheduledFuture future;
 
-    public GamePresenter(GameView view, EventBus eventBus, User currentUser) {
+    public GamePresenter(GameView view, EventBus eventBus, User currentUser, User opponent) {
         super(view, eventBus);
         bind();
         this.setCurrentUser(currentUser);
-        this.IA = new User();
-        IA.setName("IA");
+        IA = new User();
+        IA.setName(opponent.getName());
         IA.setShot(new Shot(IAShot()));
     }
     public void goBackToLobby()
@@ -51,18 +52,18 @@ public class GamePresenter extends Presenter<GameView> implements Serializable {
         if (future != null)
             future.cancel(true);
         getCurrentUser().setShot(new Shot(kind));
-        m = new Match(getCurrentUser(), IA);
+        m = new Match(getCurrentUser(), getIA());
         getCurrentUser().getMatches().add(m);
-        IA.getMatches().add(m);
+        getIA().getMatches().add(m);
         m.doMatch();
-        getView().displayWinner(getCurrentUser(), IA, m);
+        getView().displayWinner(getCurrentUser(), getIA(), m);
         getView().setBar(0f);
     }
 
     public void playNextShot()
     {
         getView().playNextShot();
-        IA.setShot(new Shot(IAShot()));
+        getIA().setShot(new Shot(IAShot()));
         timerShot = 0f;
         final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         if (future != null)
@@ -75,11 +76,11 @@ public class GamePresenter extends Presenter<GameView> implements Serializable {
                     getView().increaseBar(0.02f);
                 } else {
                     currentUser.setShot(new Shot(ShotKind.TIMEOUT));
-                    m = new Match(getCurrentUser(), IA);
+                    m = new Match(getCurrentUser(), getIA());
                     getCurrentUser().getMatches().add(m);
-                    IA.getMatches().add(m);
+                    getIA().getMatches().add(m);
                     m.doMatch();
-                    getView().displayWinner(getCurrentUser(), IA, m);
+                    getView().displayWinner(getCurrentUser(), getIA(), m);
                     getView().setBar(0f);
                     future.cancel(true);
                 }
@@ -111,5 +112,13 @@ public class GamePresenter extends Presenter<GameView> implements Serializable {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public User getIA() {
+        return IA;
+    }
+
+    public void setIA(User IA) {
+        this.IA = IA;
     }
 }

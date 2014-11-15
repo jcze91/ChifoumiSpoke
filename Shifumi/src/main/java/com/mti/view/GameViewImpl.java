@@ -23,6 +23,7 @@ import java.util.Random;
  */
 public class GameViewImpl extends VerticalLayout implements GameView {
     private final Label youLabel = new Label();
+    private final Label iaLabel = new Label();
     private final Label youScore = new Label();
     private final Label iaScore = new Label();
     private final Label youShot = new Label();
@@ -40,11 +41,11 @@ public class GameViewImpl extends VerticalLayout implements GameView {
     private final EventBus eventBus;
     private final GamePresenter presenter;
 
-    public GameViewImpl(User user, EventBus eventBus,
+    public GameViewImpl(User user, User opponent, EventBus eventBus,
                   NavigationController navigationController) {
         this.eventBus = eventBus;
         this.navigationController = navigationController;
-        this.presenter = new GamePresenter(this, eventBus, user);
+        this.presenter = new GamePresenter(this, eventBus, user, opponent);
         bind();
         setSizeFull();
         generateUI();
@@ -77,7 +78,6 @@ public class GameViewImpl extends VerticalLayout implements GameView {
                 });
         bar = new ProgressBar(0.0f);
         bar.setWidth("400px");
-        Label iaLabel = new Label("IA");
         youContent.addComponents(youLabel, youScore);
         iaContent.addComponents(iaLabel, iaScore);
         quitBtnContent.addComponents(quitButton, bar);
@@ -174,7 +174,7 @@ public class GameViewImpl extends VerticalLayout implements GameView {
             youScore.setValue(currentUser.getScore().toString());
             iaScore.setValue(IA.getScore().toString());
             youShot.setValue(String.format("Your shot : %s", currentUser.getShot().toString()));
-            iaShot.setValue(String.format("IA shot : %s", IA.getShot().toString()));
+            iaShot.setValue(String.format("Opponent shot : %s", IA.getShot().toString()));
             rock.setVisible(false);
             spoke.setVisible(false);
             lizard.setVisible(false);
@@ -183,7 +183,7 @@ public class GameViewImpl extends VerticalLayout implements GameView {
             nextPlay.setVisible(true);
             result.setVisible(true);
             if (m.getWinner() == null)
-                result.setValue("Egalité");
+                result.setValue("Draw");
             else
                 result.setValue(String.format("%s wins !", m.getWinner().getName()));
         });
@@ -192,6 +192,7 @@ public class GameViewImpl extends VerticalLayout implements GameView {
     public void init() {
         UI ui = getUI();
         youLabel.setValue(presenter.getCurrentUser().getName());
+        iaLabel.setValue(presenter.getIA().getName());
         presenter.playNextShot();
     }
     @EventHandler

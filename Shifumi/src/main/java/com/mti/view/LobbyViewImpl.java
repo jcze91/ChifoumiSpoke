@@ -38,7 +38,7 @@ public class LobbyViewImpl extends VerticalLayout implements LobbyView {
         this.user = user;
         this.eventBus = eventBus;
         this.navigationController = navigationController;
-        this.presenter = new LobbyPresenter(this, eventBus);
+        this.presenter = new LobbyPresenter(this, eventBus, user.getName());
         bind();
         setSizeFull();
         generateUI();

@@ -46,12 +46,23 @@ public class ListenVerticle extends Verticle {
                 req.response().end(callback.encodePrettily());
             }
         });
-        matcher.get("/fetchOpponent", new Handler<HttpServerRequest>() {
+        matcher.get("/fetchOpponent/:username", new Handler<HttpServerRequest>() {
             public void handle(final HttpServerRequest req) {
                 final Random RANDOM = new Random();
                 final int i = Lobby.getInstance()
                         .getUsers().size();
-                User user = Lobby.getInstance().getUsers().get(RANDOM.nextInt(i));
+                if (i < 2)
+                    return;
+                String username = req.params().get("username");
+                User user = null;
+                while (user == null)
+                {
+                    User tmp = Lobby.getInstance().getUsers().get(RANDOM.nextInt(i));
+                    if (tmp == null)
+                        return;
+                    if (!tmp.getName().equals(username))
+                        user = tmp;
+                }
                 JsonObject callback = new JsonObject().putString("username", user.getName());
                 req.response().putHeader("Content-Type", "application/json");
                 req.response().end(callback.encodePrettily());
@@ -84,7 +95,6 @@ public class ListenVerticle extends Verticle {
         // output that the server is started
         container.logger().info("Webserver started, listening on port: 8888");
     }
-
 
     /**
      * Simple handler that can be used to handle the reply from mongodb-persistor

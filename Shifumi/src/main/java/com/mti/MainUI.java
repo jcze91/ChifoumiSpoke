@@ -87,7 +87,10 @@ public class MainUI extends UI
 
     @EventHandler
     public void onShowGameEvent(ShowGameViewEvent e) {
-        gameView = new GameViewImpl(user, eventBus, navigationController);
+        User opponent = new User();
+        opponent.setName(e.getOpponentName());
+        user.setName(e.getUsername());
+        gameView = new GameViewImpl(user, opponent, eventBus, navigationController);
         setContent(gameView);
         gameView.init();
     }
