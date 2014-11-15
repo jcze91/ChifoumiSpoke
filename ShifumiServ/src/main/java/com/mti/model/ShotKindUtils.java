@@ -1,8 +1,12 @@
-package com.mti;
+package com.mti.model;
 
-
- public class ShotKindUtils
+public class ShotKindUtils
  {
+     /**
+      * Function permettant d'avoir le type de coup à partir d'une string
+      * @param s
+      * @return le type de coup désigné par la string
+      */
      public static ShotKind ConvertFromString(String s)
      {
          switch (s){

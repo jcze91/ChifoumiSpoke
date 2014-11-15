@@ -27,10 +27,22 @@ import java.util.concurrent.TimeUnit;
 
 public class GamePresenter extends Presenter<GameView> implements Serializable {
 
+    /**
+     * User actuel
+     */
     private User currentUser;
     private User opponent;
+    /**
+     * IA pour le match
+     */
     private User IA;
+    /**
+     * Match jouer sur cette page
+     */
     private Match m;
+    /**
+     * Temps pour choisir un coup
+     */
     private float timerShot;
     private ScheduledFuture future;
 
@@ -38,8 +50,7 @@ public class GamePresenter extends Presenter<GameView> implements Serializable {
         super(view, eventBus);
         bind();
         this.setCurrentUser(currentUser);
-        IA = new User();
-        IA.setName(opponent.getName());
+        IA = new User(opponent.getName());
         IA.setShot(new Shot(IAShot()));
     }
     public void goBackToLobby()
