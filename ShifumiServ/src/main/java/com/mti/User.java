@@ -1,6 +1,9 @@
 package com.mti;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.lang.Integer;import java.lang.String;import java.util.ArrayList;
 
 /**
  * Created by Yayap on 14/11/14.
